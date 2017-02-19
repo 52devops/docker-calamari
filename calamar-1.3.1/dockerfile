@@ -1,0 +1,34 @@
+FROM ubuntu:14.04
+MAINTAINER Yaohua Wang <52devops@gmail.com>
+COPY sources.list /etc/apt/sources.list
+RUN /usr/share/locales/install-language-pack en_US
+ENV LANG en_US.UTF-8
+#Apache2
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV Username "${Username:-'root'}"
+ENV Password "${Password:-'root'}"
+ENV Email "${Email:-'admin@admin.com'}"
+#Let the conatiner know that there is no tty
+ENV DEBIAN_FRONTEND noninteractive 
+RUN apt-get update
+RUN apt-get -y install curl expect
+#Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start
+RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
+#Add Calamari Repo to Container
+RUN curl https://git.ceph.com/release.asc | apt-key add -
+RUN echo "deb http://download.ceph.com/calamari/1.3.1/ubuntu/trusty trusty main">> /etc/apt/sources.list
+RUN apt-get update
+#Install Salt
+RUN apt-get install -y salt-syndic salt-minion salt-master
+RUN apt-get install -y calamari-server calamari-clients diamond
+RUN apt-get install -y apache2 libapache2-mod-wsgi libcairo2 supervisor python-cairo libpq5 postgresql
+#Init_DB
+RUN salt-call --local state.template /opt/calamari/salt-local/postgres.sls
+COPY init.sh /init.sh
+COPY initialize /initialize
+ENTRYPOINT ["/init.sh"]

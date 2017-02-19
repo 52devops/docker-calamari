@@ -1,0 +1,12 @@
+#!/usr/bin/expect -c
+spawn sudo calamari-ctl initialize
+expect "Username (leave blank to use 'root'):"
+send "$env(Username)\n"
+expect "Email address:"
+send "$env(Email)\n"
+expect "Password:"
+send "$env(Password)\n"
+expect "Password (again):"
+send "$env(Password)\n"
+interact
+exit
