@@ -1,11 +1,11 @@
 Only running calamar.
 Command as following:
-$ docker build -t {iamge-name} .
-$ docker run -itd --net=host {image-name}
-The default Variables
-\nUsername=root
-\nPassword=root
-\nEmail=admin@admin.com
+\<br>$ docker build -t {iamge-name} .
+\<br>$ docker run -itd --net=host {image-name}
+\<br>The default Variables
+\<br>Username=root
+\<br>Password=root
+\<br>Email=admin@admin.com
 
 You can set some variables.i.e
-$ docker run -itd --net=host -e Username=admin -e Password=admin {image-name}
+\<br>$ docker run -itd --net=host -e Username=admin -e Password=admin {image-name}
